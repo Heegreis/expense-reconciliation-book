@@ -6194,6 +6194,11 @@ vue-i18n@^9.0.0:
     "@intlify/vue-devtools" "9.2.2"
     "@vue/devtools-api" "^6.2.1"
 
+vue-input-calculator@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/vue-input-calculator/-/vue-input-calculator-1.0.1.tgz#5fa83f04d79943fe301eb6fad8f0ef70d5f8b0da"
+  integrity sha512-r24mBfra1Pk67kqYCzI7fuShqz8aUeSmtxgR78+bRWWr8IGkXbu0L9W/BH6tNrD+Pax6rosKNR2YoZipGEYUZA==
+
 vue-loader@17.0.1:
   version "17.0.1"
   resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-17.0.1.tgz#c0ee8875e0610a0c2d13ba9b4d50a9c8442e7a3a"
