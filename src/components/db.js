@@ -3,18 +3,7 @@ import PouchDBFind from 'pouchdb-find'
 
 PouchDB.plugin(PouchDBFind)
 
-// new PouchDB('expense-reconciliation-book')
-//   .destroy()
-//   .then(function () {
-//     // database destroyed
-//     console.log('database destroyed')
-//   })
-//   .catch(function (err) {
-//     // error occurred
-//     console.log('error occurred')
-//   })
-
-const db = new PouchDB('expense-reconciliation-book')
+let db = new PouchDB('expense-reconciliation-book')
 
 async function setInitData() {
   // set 現金 Account
@@ -168,4 +157,37 @@ function deleteItem(id, rev) {
   return db.remove(id, rev)
 }
 
-export default { setInitData, create, read, update, deleteItem }
+async function getAllDocs() {
+  return db
+    .allDocs({
+      include_docs: true,
+      attachments: true,
+    })
+    .then(function (result) {
+      return result
+    })
+    .catch(function (err) {
+      console.log(err)
+    })
+}
+
+async function resetDB() {
+  try {
+    await db.destroy()
+    console.log('database destroyed')
+    db = new PouchDB('expense-reconciliation-book')
+    console.log('database reset')
+  } catch (err) {
+    console.log('error occurred')
+  }
+}
+
+export default {
+  setInitData,
+  create,
+  read,
+  update,
+  deleteItem,
+  getAllDocs,
+  resetDB,
+}

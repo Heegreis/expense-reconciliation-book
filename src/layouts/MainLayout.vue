@@ -41,9 +41,9 @@ import EssentialLink from 'components/EssentialLink.vue'
 
 const linksList = [
   {
-    title: 'Setting',
+    title: 'Settings',
     icon: 'settings',
-    link: '',
+    link: 'settings',
   },
 ]
 
