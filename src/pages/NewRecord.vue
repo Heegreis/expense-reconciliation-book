@@ -31,7 +31,7 @@
       <q-btn-group spread>
         <q-btn label="再記一筆" />
         <q-separator vertical dark />
-        <q-btn @click="getExpenseData" label="儲存" />
+        <q-btn @click="save" label="儲存" />
       </q-btn-group>
     </q-footer>
   </q-page>
@@ -39,6 +39,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { date } from 'quasar'
 import db from 'components/db'
 // import VueInputCalculator from 'vue-input-calculator'
@@ -50,8 +51,9 @@ export default defineComponent({
   name: 'NewRecord',
   components: { ExpenseForm, IncomeForm, TransForm },
   setup() {
-    // db.setInitData() 新增紀錄的頁面 應該就不需要 setInitData了
-    //
+    const $router = useRouter()
+    const tab = ref('expense')
+
     const formattedDate = date.formatDate(Date.now(), 'YYYY-MM-DD')
     const expenseData = ref({
       amount: 0,
@@ -69,7 +71,7 @@ export default defineComponent({
       account: '',
       remark: '',
     })
-    const TransData = ref({
+    const transData = ref({
       amount: 0,
       fee: 0,
       date: formattedDate,
@@ -78,17 +80,28 @@ export default defineComponent({
       remark: '',
     })
 
-    function getExpenseData() {
-      console.log(expenseData.value)
-      console.log(typeof expenseData.value)
-      console.log(expenseData.value['date'])
+    async function save() {
+      let doc = {
+        _id: Date.now().toString(),
+        type: tab.value,
+      }
+      if (tab.value === 'expense') {
+        Object.assign(doc, expenseData.value)
+      } else if (tab.value === 'income') {
+        Object.assign(doc, incomeData.value)
+      } else if (tab.value === 'trans') {
+        Object.assign(doc, transData.value)
+      }
+      await db.create(doc)
+      $router.push('/')
+      console.log('push /')
     }
 
     return {
-      tab: ref('expense'),
+      tab,
       expenseData,
       incomeData,
-      getExpenseData,
+      save,
     }
   },
 })
