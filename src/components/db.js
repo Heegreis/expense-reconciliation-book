@@ -157,6 +157,25 @@ function deleteItem(id, rev) {
   return db.remove(id, rev)
 }
 
+function getAccounts() {
+  return db
+    .createIndex({
+      index: { fields: ['type'] },
+    })
+    .then(function () {
+      return db
+        .find({
+          selector: { type: 'account' },
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
+    })
+    .catch(function (err) {
+      console.log(err)
+    })
+}
+
 async function getAllDocs() {
   return db
     .allDocs({
@@ -190,4 +209,5 @@ export default {
   deleteItem,
   getAllDocs,
   resetDB,
+  getAccounts,
 }

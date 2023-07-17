@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import VueInputCalculator from 'vue-input-calculator'
 import db from 'components/db'
 
@@ -36,7 +36,7 @@ function setMiddleValue(valueName) {
     },
     set(newValue) {
       const newModelValue = props.modelValue
-      newModelValue[valueName] = Number(newValue)
+      newModelValue[valueName] = newValue
       return emit('update:modelValue', newModelValue)
     },
   })
@@ -50,6 +50,33 @@ const accountMiddle = setMiddleValue('account')
 const remarkMiddle = setMiddleValue('remark')
 
 const options = ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle']
+
+const categoryOptions = ref([])
+let subCateOptions = []
+db.read('expense-category').then(function (result) {
+  const expenseCategory = result.options
+
+  categoryOptions.value = Array.from(expenseCategory.keys())
+  categoryMiddle.value = categoryOptions.value[0]
+
+  subCateOptions = computed(() => {
+    return expenseCategory.get(categoryMiddle.value)
+  })
+  subCateMiddle.value = subCateOptions.value[0]
+  watch(subCateOptions, (newSubCateOptions) => {
+    subCateMiddle.value = newSubCateOptions[0]
+  })
+})
+
+const accountOptions = ref([])
+db.getAccounts().then(function (result) {
+  let accountTypeArray = []
+  result.docs.forEach((doc) => {
+    accountTypeArray.push(doc.name)
+  })
+  accountOptions.value = accountTypeArray
+  accountMiddle.value = accountOptions.value[0]
+})
 </script>
 
 <template>
@@ -67,21 +94,29 @@ const options = ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle']
   </div>
   <div class="row">
     <div class="col">
-      <q-select v-model="categoryMiddle" :options="options" label="分類" />
-      <!-- 要撈資料庫的選項，如果餵入''就去資料庫找預設選項 -->
-      <!-- 但暫時沒資料庫，先完善下面的選項 -->
+      <q-select
+        v-model="categoryMiddle"
+        :options="categoryOptions"
+        label="分類"
+      />
     </div>
   </div>
   <div class="row">
     <div class="col">
-      <q-select v-model="subCateMiddle" :options="options" label="子分類" />
-      <!-- 要撈資料庫的選項，如果餵入''就去資料庫找預設選項 -->
-      <!-- 但暫時沒資料庫，先完善下面的選項 -->
+      <q-select
+        v-model="subCateMiddle"
+        :options="subCateOptions"
+        label="子分類"
+      />
     </div>
   </div>
   <div class="row">
     <div class="col">
-      <q-select v-model="accountMiddle" :options="options" label="帳戶" />
+      <q-select
+        v-model="accountMiddle"
+        :options="accountOptions"
+        label="帳戶"
+      />
       <!-- 要撈資料庫的選項，如果餵入''就去資料庫找預設選項 -->
       <!-- 但暫時沒資料庫，先完善下面的選項 -->
     </div>
