@@ -49,8 +49,6 @@ const subCateMiddle = setMiddleValue('subCate')
 const accountMiddle = setMiddleValue('account')
 const remarkMiddle = setMiddleValue('remark')
 
-const options = ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle']
-
 const categoryOptions = ref([])
 let subCateOptions = []
 db.read('expense-category').then(function (result) {
@@ -72,10 +70,10 @@ const accountOptions = ref([])
 db.getAccounts().then(function (result) {
   let accountTypeArray = []
   result.docs.forEach((doc) => {
-    accountTypeArray.push(doc.name)
+    accountTypeArray.push({ value: doc._id, label: doc.name })
   })
   accountOptions.value = accountTypeArray
-  accountMiddle.value = accountOptions.value[0]
+  accountMiddle.value = accountOptions.value[0].value
 })
 </script>
 
@@ -116,6 +114,8 @@ db.getAccounts().then(function (result) {
         v-model="accountMiddle"
         :options="accountOptions"
         label="帳戶"
+        emit-value
+        map-options
       />
       <!-- 要撈資料庫的選項，如果餵入''就去資料庫找預設選項 -->
       <!-- 但暫時沒資料庫，先完善下面的選項 -->
